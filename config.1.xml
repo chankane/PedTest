@@ -85,8 +85,6 @@
     <plugin name="cordova-plugin-pedometer" spec="^0.4.1" />
     <plugin name="cordova-plugin-stepcounter" spec="^1.0.1" />
     <plugin name="cordova-plugin-qrscanner" spec="^2.6.0" />
-    <plugin name="cordova-sqlite-storage" spec="^2.4.0" />
-    <plugin name="cordova-plugin-background-mode" spec="^0.7.2" />
     <engine name="android" spec="7.0.0" />
-    <engine name="browser" spec="5.0.4" />
+    <engine name="browser" spec="~5.0.4" />
 </widget>

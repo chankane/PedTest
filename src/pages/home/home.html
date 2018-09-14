@@ -7,8 +7,12 @@
 </ion-header>
 
 <ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+  Hi
+  count = {{steps}}
+  <table border="1">
+    <tr ion-item *ngFor="let item of history">
+      <td>{{item.dateTime}}</td>
+      <td>{{item.steps}}</td>
+    </tr>
+  </table>
 </ion-content>

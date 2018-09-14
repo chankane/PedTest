@@ -1,0 +1,64 @@
+import { Storage } from '@ionic/storage';
+import { BackgroundMode } from '@ionic-native/background-mode';
+import { Pedometer, IPedometerData } from '@ionic-native/pedometer';
+
+import{ StepsData } from './steps-data'
+import{ Scheduler } from './scheduler'
+import { Component } from '@angular/core';
+
+export class DailyPedometer {
+
+  steps: number = 0
+  history: StepsData[] = []
+
+  private onHourChanged() {
+    let prev: Date = new Date()
+    prev.setHours(prev.getHours() - 1)
+    this.write(prev, this.steps)
+    this.history[prev.getHours()] = <StepsData>{dateTime: this.toDateTime(prev), steps: this.steps}
+  }
+
+  private onDateChanged() {
+    this.steps = 0
+  }
+
+  constructor(private pedometer: Pedometer, private storage: Storage/*, private backgroundMode: BackgroundMode*/) {
+    //backgroundMode.enable()
+    this.startScan()
+    new Scheduler().start(this.onHourChanged, this.onDateChanged)
+    this.readHistory()
+  }
+
+  private startScan() {
+    this.pedometer.startPedometerUpdates().subscribe((data: IPedometerData) => {
+      this.onStep(data.numberOfSteps)
+    })
+  }
+
+  private onStep(steps: number) {
+    this.steps = steps
+  }
+
+  private write(date: Date, step: number) {
+    this.storage.set(this.toDateTime(date).toString(), step)
+    alert('writed')
+  }
+
+  private async readHistory() {
+    let date = new Date()
+    for(let i=0; i<24; i++){
+      date.setHours(i)
+      await this.storage.get(this.toDateTime(date).toString()).then((val) => {
+        if(null == val){
+          val = 0
+        }
+        this.history[i] = <StepsData>{dateTime: this.toDateTime(date), steps: <number>val}
+      });
+    }
+  }
+
+  // Date to number
+  private toDateTime(date: Date): number{
+    return date.getFullYear() * 1000000 + (date.getMonth() + 1) * 10000 + date.getDate() * 100 + date.getHours()
+  }
+}
